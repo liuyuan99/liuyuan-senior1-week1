@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.liuyuan.dao.GoodsMapper">
+
+	<!-- 查询 -->
+	<select id="selects" resultMap="goodsMapper">
+		select * from goods left join goods_brand on goods.bid=goods_brand.bid left join goods_type on goods.tid=goods_type.tid
+		<where>
+			<if test="m1!=null">
+				money &gt;=#{m1}
+			</if>
+			<if test="m2!=null">
+				and money &lt;=#{m2}
+			</if>
+			<if test="name!=null and name!=''">
+				and name like concat('%',#{name},'%')
+			</if>
+			<if test="english!=null and english!=''">
+				and english like concat('%',#{english},'%')
+			</if>
+			<if test="bname!=null and bname!=''">
+				and bname = #{bname}
+			</if>
+			<if test="tname!=null and tame!=''">
+				and tname = #{tname}
+			</if>
+			<if test="other!=null and other!=''">
+				and other like concat('%',#{other},'%')
+			</if>
+		</where>
+	</select>
+	<resultMap type="Goods" id="goodsMapper">
+		<id property="id" column="id"/>
+		<result property="name" column="name"/>
+		<result property="english" column="english"/>
+		<result property="count" column="count"/>
+		<result property="money" column="money"/>
+		<result property="num" column="num"/>
+		<result property="other" column="other"/>
+		<result property="img" column="img"/>
+		
+		<association property="brand" javaType="Brand">
+			<id property="bid" column="bid"/>
+			<result property="bname" column="bname"/>
+		</association>
+		
+		<association property="type" javaType="Type">
+			<id property="tid" column="tid"/>
+			<result property="tname" column="tname"/>
+		</association>
+		
+		</resultMap>
+
+	
+	<!-- 品牌 -->
+	<select id="brand" resultType="Brand">
+		select * from goods_brand
+	</select>
+		
+	<!-- 类型 -->
+	<select id="type" resultType="Type">
+		select * from goods_type
+	</select>
+	
+	<insert id="addGoods">
+ 		insert into goods values(#{id},#{name},#{english},#{bid},#{tid},#{count},#{money},#{num},#{other},#{img})
+ 	</insert>
+ 	
+ <!-- 	<insert id="addType">
+ 		insert into goods_type values(#{tid},#{tname})
+ 	</insert>
+ 	
+ 	<insert id="addBrand">
+ 		insert into goods_brand values(#{bid},#{bname})
+ 	</insert> -->
+</mapper>
